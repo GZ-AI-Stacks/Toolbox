@@ -1,0 +1,2352 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
+<meta name="theme-color" content="#0a0e12">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="description" content="Handwerker-Multitool — Bau-Rechner, Elektro-Helfer, Fliesenleger-Tool. Offline. Kostenlos.">
+<title>Toolbox | GZ-AI.-Stacks</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Sora:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root {
+  --bg: #0a0e12;
+  --card: #111820;
+  --card-hover: #161e28;
+  --bor: rgba(255,255,255,0.08);
+  --bor-focus: rgba(0,255,136,0.4);
+  --neon: #00ff88;
+  --cyan: #00d4ff;
+  --purple: #b44aff;
+  --amber: #ffaa00;
+  --red: #ff5555;
+  --text: rgba(255,255,255,0.85);
+  --text-dim: rgba(255,255,255,0.4);
+  --text-white: #fff;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --zoom: 1;
+}
+
+/* === LIGHT MODE === */
+[data-theme="light"] {
+  --bg: #f2f4f6;
+  --card: #ffffff;
+  --card-hover: #f0f0f0;
+  --bor: rgba(0,0,0,0.08);
+  --bor-focus: rgba(0,153,102,0.4);
+  --neon: #009966;
+  --cyan: #006898;
+  --purple: #7b2fbf;
+  --amber: #c07000;
+  --red: #cc3333;
+  --text: rgba(0,0,0,0.8);
+  --text-dim: rgba(0,0,0,0.4);
+  --text-white: #111;
+}
+[data-theme="light"] .header {
+  background: rgba(242,244,246,0.95);
+}
+[data-theme="light"] .bottom-nav {
+  background: rgba(242,244,246,0.97);
+}
+[data-theme="light"] .header-name {
+  background: linear-gradient(135deg, #009966, #006898);
+  -webkit-background-clip: text;
+}
+[data-theme="light"] input[type="number"],
+[data-theme="light"] select {
+  background: rgba(0,0,0,0.03);
+  color: #111;
+  border-color: rgba(0,0,0,0.1);
+}
+[data-theme="light"] input[type="number"]::placeholder { color: rgba(0,0,0,0.2); }
+[data-theme="light"] .nk-num { background: rgba(0,0,0,0.05); color: #111; }
+[data-theme="light"] .nk-num:active { background: rgba(0,0,0,0.1); }
+[data-theme="light"] .numpad { background: #fff; border-color: rgba(0,153,102,0.15); }
+[data-theme="light"] .numpad-display { background: rgba(0,153,102,0.04); border-color: rgba(0,153,102,0.12); }
+[data-theme="light"] .numpad-overlay { background: rgba(0,0,0,0.4); }
+[data-theme="light"] .result { background: rgba(0,153,102,0.04); border-color: rgba(0,153,102,0.12); }
+[data-theme="light"] .quick-card { background: #fff; }
+[data-theme="light"] .accordion-header { background: #fff; }
+[data-theme="light"] .ref-table th { background: rgba(0,153,102,0.06); }
+[data-theme="light"] .icon-card, [data-theme="light"] .terminal { background: #fff; }
+[data-theme="light"] .offline-dot { background: #009966; }
+[data-theme="light"] select option { background: #fff; color: #111; }
+
+/* === BAUSTELLE MODE (hell, hoher Kontrast, Monospace) === */
+[data-theme="baustelle"] {
+  --bg: #f5f0e0;
+  --card: #fffdf5;
+  --card-hover: #f0ecdc;
+  --bor: rgba(0,0,0,0.12);
+  --bor-focus: rgba(0,0,0,0.5);
+  --neon: #cc5500;
+  --cyan: #0055aa;
+  --purple: #884400;
+  --amber: #bb6600;
+  --red: #cc0000;
+  --text: rgba(0,0,0,0.85);
+  --text-dim: rgba(0,0,0,0.45);
+  --text-white: #111;
+}
+[data-theme="baustelle"] body { font-family: 'Courier New', 'Consolas', monospace !important; }
+[data-theme="baustelle"] * { font-family: inherit; }
+[data-theme="baustelle"] .header {
+  background: rgba(245,240,224,0.97);
+  border-bottom: 2px solid rgba(0,0,0,0.15);
+}
+[data-theme="baustelle"] .header-name {
+  background: none;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: #cc5500;
+  font-family: 'Courier New', monospace;
+  font-size: 15px;
+}
+[data-theme="baustelle"] .header-sub { color: rgba(0,0,0,0.35); font-family: 'Courier New', monospace; }
+[data-theme="baustelle"] .bottom-nav {
+  background: rgba(245,240,224,0.97);
+  border-top: 2px solid rgba(0,0,0,0.15);
+}
+[data-theme="baustelle"] .nav-item { font-family: 'Courier New', monospace; font-weight: 700; }
+[data-theme="baustelle"] .nav-item.active { color: #cc5500; }
+[data-theme="baustelle"] .sec-title {
+  font-family: 'Courier New', monospace;
+  color: #111;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+[data-theme="baustelle"] .sec-desc { color: rgba(0,0,0,0.4); }
+[data-theme="baustelle"] .card {
+  background: #fffdf5;
+  border: 2px solid rgba(0,0,0,0.1);
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.05);
+}
+[data-theme="baustelle"] .card-title {
+  font-family: 'Courier New', monospace;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+[data-theme="baustelle"] .form-label {
+  color: rgba(0,0,0,0.5);
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+[data-theme="baustelle"] input[type="number"],
+[data-theme="baustelle"] select {
+  background: #fff;
+  color: #111;
+  border: 2px solid rgba(0,0,0,0.15);
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+  font-size: 18px;
+}
+[data-theme="baustelle"] input[type="number"]::placeholder { color: rgba(0,0,0,0.2); }
+[data-theme="baustelle"] input[type="number"]:focus,
+[data-theme="baustelle"] select:focus { border-color: #cc5500; }
+[data-theme="baustelle"] select option { background: #fff; color: #111; }
+[data-theme="baustelle"] .btn-primary {
+  background: #cc5500;
+  border: 2px solid #aa4400;
+  color: #fff;
+  font-family: 'Courier New', monospace;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 15px;
+}
+[data-theme="baustelle"] .btn-primary:active { background: #aa4400; }
+[data-theme="baustelle"] .result {
+  background: rgba(204,85,0,0.04);
+  border: 2px solid rgba(204,85,0,0.15);
+}
+[data-theme="baustelle"] .result-value {
+  color: #cc5500;
+  font-family: 'Courier New', monospace;
+  font-weight: 900;
+}
+[data-theme="baustelle"] .result-row .val {
+  color: #cc5500 !important;
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+}
+[data-theme="baustelle"] .result-row .val.cyan { color: #0055aa !important; }
+[data-theme="baustelle"] .result-row .val.amber { color: #bb6600 !important; }
+[data-theme="baustelle"] .result-row .val.purple { color: #884400 !important; }
+[data-theme="baustelle"] .result-row .label {
+  color: rgba(0,0,0,0.45);
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+}
+[data-theme="baustelle"] .quick-card {
+  background: #fffdf5;
+  border: 2px solid rgba(0,0,0,0.1);
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.05);
+}
+[data-theme="baustelle"] .quick-card .name {
+  color: #333;
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+}
+[data-theme="baustelle"] .accordion-header {
+  background: #fffdf5;
+  border: 2px solid rgba(0,0,0,0.1);
+}
+[data-theme="baustelle"] .accordion-header .title { color: #333; font-family: 'Courier New', monospace; }
+[data-theme="baustelle"] .ref-table th {
+  background: rgba(204,85,0,0.08);
+  color: #cc5500;
+  font-family: 'Courier New', monospace;
+}
+[data-theme="baustelle"] .ref-table td {
+  color: #333;
+  font-family: 'Courier New', monospace;
+  border-bottom-color: rgba(0,0,0,0.06);
+}
+[data-theme="baustelle"] .offline-dot { background: #cc5500; }
+[data-theme="baustelle"] .numpad { background: #f5f0e0; border-color: rgba(0,0,0,0.15); }
+[data-theme="baustelle"] .numpad-display {
+  background: #fff;
+  border: 2px solid rgba(204,85,0,0.15);
+  color: #cc5500;
+  font-family: 'Courier New', monospace;
+  font-weight: 900;
+}
+[data-theme="baustelle"] .numpad-overlay { background: rgba(0,0,0,0.4); }
+[data-theme="baustelle"] .nk-num {
+  background: #fff;
+  color: #111;
+  font-family: 'Courier New', monospace;
+  font-weight: 900;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+[data-theme="baustelle"] .nk-num:active { background: #f0ecdc; }
+[data-theme="baustelle"] .nk-ok {
+  background: #cc5500;
+  border-color: #aa4400;
+  color: #fff;
+}
+[data-theme="baustelle"] .nk-op { background: rgba(0,0,0,0.04); color: #333; }
+[data-theme="baustelle"] .nk-del { background: rgba(204,0,0,0.06); color: #cc0000; }
+[data-theme="baustelle"] .footer-brand { color: rgba(0,0,0,0.08); font-family: 'Courier New', monospace; }
+[data-theme="baustelle"] .license-screen { background: #f5f0e0; }
+[data-theme="baustelle"] .license-title { color: #333; font-family: 'Courier New', monospace; }
+[data-theme="baustelle"] .license-subtitle { color: rgba(0,0,0,0.4); }
+[data-theme="baustelle"] .license-input {
+  background: #fff;
+  color: #111;
+  border: 2px solid rgba(0,0,0,0.15);
+  font-family: 'Courier New', monospace;
+}
+[data-theme="baustelle"] .license-input:focus { border-color: #cc5500; }
+[data-theme="baustelle"] .license-btn {
+  background: #cc5500;
+  border: none;
+  color: #fff;
+  font-family: 'Courier New', monospace;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+[data-theme="baustelle"] .license-footer { color: rgba(0,0,0,0.08); }
+[data-theme="baustelle"] .hdr-btn {
+  background: rgba(0,0,0,0.04);
+  border-color: rgba(0,0,0,0.12);
+  color: rgba(0,0,0,0.5);
+}
+
+/* === RETRO TERMINAL MODE === */
+@font-face {
+  font-family: 'RetroMono';
+  src: local('Courier New'), local('Consolas'), local('monospace');
+}
+[data-theme="retro"] {
+  --bg: #0a0a00;
+  --card: #0f0f02;
+  --card-hover: #161604;
+  --bor: rgba(0,255,0,0.1);
+  --bor-focus: rgba(0,255,0,0.5);
+  --neon: #00ff00;
+  --cyan: #00ff00;
+  --purple: #00cc00;
+  --amber: #ffaa00;
+  --red: #ff3333;
+  --text: rgba(0,255,0,0.75);
+  --text-dim: rgba(0,255,0,0.35);
+  --text-white: #00ff00;
+}
+[data-theme="retro"] body {
+  font-family: 'Courier New', 'Consolas', monospace !important;
+}
+[data-theme="retro"] * {
+  font-family: inherit;
+}
+[data-theme="retro"] .header {
+  background: rgba(10,10,0,0.95);
+  border-bottom-color: rgba(0,255,0,0.15);
+}
+[data-theme="retro"] .header-name {
+  background: none;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: #00ff00;
+  font-family: 'Courier New', monospace;
+  text-shadow: 0 0 8px rgba(0,255,0,0.4);
+}
+[data-theme="retro"] .header-sub {
+  color: rgba(0,255,0,0.3);
+  font-family: 'Courier New', monospace;
+}
+[data-theme="retro"] .bottom-nav {
+  background: rgba(10,10,0,0.97);
+  border-top-color: rgba(0,255,0,0.15);
+}
+[data-theme="retro"] .nav-item { font-family: 'Courier New', monospace; }
+[data-theme="retro"] .nav-item.active { color: #00ff00; text-shadow: 0 0 6px rgba(0,255,0,0.3); }
+[data-theme="retro"] .sec-title {
+  font-family: 'Courier New', monospace;
+  text-shadow: 0 0 6px rgba(0,255,0,0.3);
+  color: #00ff00;
+}
+[data-theme="retro"] .sec-desc { color: rgba(0,255,0,0.3); }
+[data-theme="retro"] .card {
+  background: rgba(0,255,0,0.02);
+  border-color: rgba(0,255,0,0.1);
+}
+[data-theme="retro"] .card-title {
+  font-family: 'Courier New', monospace;
+  color: #00ff00;
+  text-shadow: 0 0 4px rgba(0,255,0,0.2);
+}
+[data-theme="retro"] .form-label { color: rgba(0,255,0,0.4); font-family: 'Courier New', monospace; }
+[data-theme="retro"] input[type="number"],
+[data-theme="retro"] select {
+  background: rgba(0,255,0,0.03);
+  color: #00ff00;
+  border-color: rgba(0,255,0,0.15);
+  font-family: 'Courier New', monospace;
+  text-shadow: 0 0 3px rgba(0,255,0,0.2);
+}
+[data-theme="retro"] input[type="number"]::placeholder { color: rgba(0,255,0,0.15); }
+[data-theme="retro"] input[type="number"]:focus,
+[data-theme="retro"] select:focus { border-color: rgba(0,255,0,0.5); }
+[data-theme="retro"] select option { background: #0a0a00; color: #00ff00; }
+[data-theme="retro"] .btn-primary {
+  background: rgba(0,255,0,0.06);
+  border-color: rgba(0,255,0,0.25);
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
+  text-shadow: 0 0 4px rgba(0,255,0,0.3);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+[data-theme="retro"] .btn-primary:active { background: rgba(0,255,0,0.12); }
+[data-theme="retro"] .result {
+  background: rgba(0,255,0,0.03);
+  border-color: rgba(0,255,0,0.12);
+}
+[data-theme="retro"] .result-value {
+  color: #00ff00;
+  text-shadow: 0 0 8px rgba(0,255,0,0.4);
+  font-family: 'Courier New', monospace;
+}
+[data-theme="retro"] .result-row .val {
+  color: #00ff00 !important;
+  text-shadow: 0 0 4px rgba(0,255,0,0.3);
+}
+[data-theme="retro"] .result-row .val.cyan { color: #33ff33 !important; }
+[data-theme="retro"] .result-row .val.amber { color: #ffaa00 !important; text-shadow: 0 0 4px rgba(255,170,0,0.3); }
+[data-theme="retro"] .result-row .val.purple { color: #00cc00 !important; }
+[data-theme="retro"] .result-row .label { color: rgba(0,255,0,0.35); font-family: 'Courier New', monospace; }
+[data-theme="retro"] .quick-card {
+  background: rgba(0,255,0,0.02);
+  border-color: rgba(0,255,0,0.1);
+}
+[data-theme="retro"] .quick-card .name { color: rgba(0,255,0,0.7); font-family: 'Courier New', monospace; }
+[data-theme="retro"] .accordion-header {
+  background: rgba(0,255,0,0.02);
+  border-color: rgba(0,255,0,0.1);
+}
+[data-theme="retro"] .accordion-header .title { color: #00ff00; font-family: 'Courier New', monospace; }
+[data-theme="retro"] .ref-table th {
+  background: rgba(0,255,0,0.06);
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
+}
+[data-theme="retro"] .ref-table td { color: rgba(0,255,0,0.6); font-family: 'Courier New', monospace; }
+[data-theme="retro"] .offline-dot { background: #00ff00; box-shadow: 0 0 6px rgba(0,255,0,0.5); }
+[data-theme="retro"] .numpad { background: #0a0a00; border-color: rgba(0,255,0,0.15); }
+[data-theme="retro"] .numpad-display {
+  background: rgba(0,255,0,0.03);
+  border-color: rgba(0,255,0,0.12);
+  color: #00ff00;
+  text-shadow: 0 0 8px rgba(0,255,0,0.4);
+  font-family: 'Courier New', monospace;
+}
+[data-theme="retro"] .numpad-overlay { background: rgba(0,0,0,0.8); }
+[data-theme="retro"] .nk-num {
+  background: rgba(0,255,0,0.04);
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
+  text-shadow: 0 0 3px rgba(0,255,0,0.3);
+}
+[data-theme="retro"] .nk-num:active { background: rgba(0,255,0,0.1); }
+[data-theme="retro"] .nk-ok {
+  background: rgba(0,255,0,0.08);
+  border-color: rgba(0,255,0,0.25);
+  color: #00ff00;
+}
+[data-theme="retro"] .nk-op { background: rgba(0,255,0,0.04); color: #00ff00; }
+[data-theme="retro"] .nk-del { background: rgba(255,50,50,0.06); }
+[data-theme="retro"] .footer-brand { color: rgba(0,255,0,0.06); font-family: 'Courier New', monospace; }
+[data-theme="retro"] .license-screen { background: #0a0a00; }
+[data-theme="retro"] .license-title { color: #00ff00; font-family: 'Courier New', monospace; text-shadow: 0 0 8px rgba(0,255,0,0.3); }
+[data-theme="retro"] .license-subtitle { color: rgba(0,255,0,0.4); }
+[data-theme="retro"] .license-input {
+  background: rgba(0,255,0,0.03);
+  color: #00ff00;
+  border-color: rgba(0,255,0,0.2);
+  font-family: 'Courier New', monospace;
+  text-shadow: 0 0 3px rgba(0,255,0,0.3);
+}
+[data-theme="retro"] .license-input:focus { border-color: #00ff00; }
+[data-theme="retro"] .license-btn {
+  background: rgba(0,255,0,0.08);
+  border: 1px solid rgba(0,255,0,0.25);
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+[data-theme="retro"] .license-footer { color: rgba(0,255,0,0.06); }
+/* Scanlines */
+[data-theme="retro"]::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 99998;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,255,0,0.015) 2px,
+    rgba(0,255,0,0.015) 4px
+  );
+}
+/* CRT flicker */
+@keyframes crt-flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 1; }
+  93% { opacity: 0.97; }
+  94% { opacity: 1; }
+}
+[data-theme="retro"] .page { animation: crt-flicker 4s infinite; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Sora', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding-bottom: 80px;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  font-size: calc(16px * var(--zoom));
+  transition: background 0.3s, color 0.3s;
+}
+
+/* === HEADER === */
+.header {
+  background: rgba(10,14,18,0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--bor);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.header-name {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 900;
+  font-size: 14px;
+  background: linear-gradient(135deg, var(--neon), var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 1px;
+}
+.header-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+}
+.header-right {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.install-btn {
+  font-family: 'Sora';
+  font-size: 10px;
+  padding: 5px 12px;
+  border: 1px solid rgba(0,255,136,0.2);
+  border-radius: 6px;
+  background: rgba(0,255,136,0.08);
+  color: var(--neon);
+  cursor: pointer;
+  display: none;
+}
+
+/* === HEADER CONTROLS === */
+.hdr-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--bor);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.04);
+  color: var(--text-dim);
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.hdr-btn:active { transform: scale(0.9); }
+.hdr-btn:hover { border-color: rgba(0,255,136,0.2); color: var(--text); }
+[data-theme="light"] .hdr-btn { background: rgba(0,0,0,0.03); }
+.zoom-display {
+  font-family: 'JetBrains Mono';
+  font-size: 10px;
+  color: var(--text-dim);
+  min-width: 32px;
+  text-align: center;
+}
+
+.offline-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--neon);
+}
+.offline-dot.off { background: var(--amber); }
+
+/* === BOTTOM NAV === */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(10,14,18,0.97);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--bor);
+  display: flex;
+  padding: 6px 0 env(safe-area-inset-bottom, 8px);
+}
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 8px 4px;
+  border: none;
+  background: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: color 0.2s;
+  font-family: 'Sora';
+  font-size: 9px;
+  letter-spacing: 0.5px;
+}
+.nav-item.active { color: var(--neon); }
+.nav-item svg { width: 22px; height: 22px; }
+
+/* === PAGES === */
+.page { display: none; padding: 16px; }
+.page.active { display: block; }
+
+/* === SECTION TITLES === */
+.sec-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-white);
+  margin-bottom: 4px;
+}
+.sec-desc {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+}
+
+/* === CARDS === */
+.card {
+  background: var(--card);
+  border: 1px solid var(--bor);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.card-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-white);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-title .icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.card-title .icon.green { background: rgba(0,255,136,0.1); }
+.card-title .icon.blue { background: rgba(0,212,255,0.1); }
+.card-title .icon.purple { background: rgba(180,74,255,0.1); }
+.card-title .icon.amber { background: rgba(255,170,0,0.1); }
+
+/* === FORM ELEMENTS === */
+.form-group {
+  margin-bottom: 10px;
+}
+.form-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+  display: block;
+  letter-spacing: 0.5px;
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.form-row.three { grid-template-columns: 1fr 1fr 1fr; }
+
+input[type="number"], select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--bor);
+  border-radius: var(--radius-sm);
+  background: rgba(255,255,255,0.04);
+  color: var(--text-white);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.2s;
+  -webkit-appearance: none;
+}
+input[type="number"]:focus, select:focus {
+  border-color: var(--bor-focus);
+}
+input[type="number"]::placeholder {
+  color: rgba(255,255,255,0.15);
+}
+select {
+  font-size: 14px;
+  cursor: pointer;
+}
+select option {
+  background: #1a2030;
+  color: #fff;
+}
+
+/* === BUTTONS === */
+.btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: 'Sora', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 8px;
+  letter-spacing: 0.5px;
+}
+.btn-primary {
+  background: linear-gradient(135deg, rgba(0,255,136,0.15), rgba(0,212,255,0.15));
+  border: 1px solid rgba(0,255,136,0.25);
+  color: var(--neon);
+}
+.btn-primary:active {
+  background: linear-gradient(135deg, rgba(0,255,136,0.25), rgba(0,212,255,0.25));
+  transform: scale(0.98);
+}
+.btn-reset {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--bor);
+  color: var(--text-dim);
+  font-size: 12px;
+  padding: 10px;
+}
+
+/* === RESULT === */
+.result {
+  background: rgba(0,255,136,0.04);
+  border: 1px solid rgba(0,255,136,0.12);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  margin-top: 12px;
+  display: none;
+}
+.result.show { display: block; }
+.result-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.result-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--neon);
+  line-height: 1.3;
+}
+.result-value.small { font-size: 16px; }
+.result-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.result-row:last-child { border-bottom: none; }
+.result-row .label {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.result-row .val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--neon);
+}
+.result-row .val.cyan { color: var(--cyan); }
+.result-row .val.amber { color: var(--amber); }
+.result-row .val.purple { color: var(--purple); }
+
+/* === QUICK TOOLS GRID === */
+.quick-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.quick-card {
+  background: var(--card);
+  border: 1px solid var(--bor);
+  border-radius: var(--radius);
+  padding: 16px 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+.quick-card:active {
+  transform: scale(0.97);
+  border-color: rgba(0,255,136,0.2);
+}
+.quick-card .emoji { font-size: 28px; margin-bottom: 6px; }
+.quick-card .name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.3px;
+}
+
+/* === ACCORDION === */
+.accordion-header {
+  background: var(--card);
+  border: 1px solid var(--bor);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.2s;
+}
+.accordion-header:active { background: var(--card-hover); }
+.accordion-header .title {
+  font-family: 'Outfit';
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-white);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.accordion-header .arrow {
+  color: var(--text-dim);
+  font-size: 12px;
+  transition: transform 0.2s;
+}
+.accordion-header.open .arrow { transform: rotate(180deg); }
+.accordion-body {
+  display: none;
+  padding: 0 4px 8px;
+}
+.accordion-body.open { display: block; }
+
+/* === TABLE === */
+.ref-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  margin-top: 8px;
+}
+.ref-table th {
+  text-align: left;
+  padding: 8px 10px;
+  background: rgba(0,255,136,0.05);
+  color: var(--neon);
+  font-family: 'JetBrains Mono';
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--bor);
+}
+.ref-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  color: var(--text);
+}
+.ref-table tr:nth-child(even) td { background: rgba(255,255,255,0.01); }
+
+/* === TOAST === */
+.toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  font-family: 'JetBrains Mono';
+  font-size: 12px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  background: rgba(0,255,136,0.12);
+  border: 1px solid rgba(0,255,136,0.25);
+  color: var(--neon);
+  z-index: 999;
+  transition: transform 0.3s;
+  pointer-events: none;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* === NUMPAD OVERLAY === */
+.numpad-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+}
+.numpad-overlay.open { display: flex; }
+
+.numpad {
+  width: 100%;
+  max-width: 500px;
+  background: #111820;
+  border-top: 1px solid rgba(0,255,136,0.15);
+  border-radius: 20px 20px 0 0;
+  padding: 16px 12px env(safe-area-inset-bottom, 12px);
+  animation: slideUp 0.25s ease;
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.numpad-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 6px 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  margin-bottom: 10px;
+}
+.numpad-label {
+  font-family: 'Sora';
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-dim);
+}
+.numpad-display {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--neon);
+  text-align: right;
+  padding: 8px 12px;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  background: rgba(0,255,136,0.03);
+  border: 1px solid rgba(0,255,136,0.1);
+  border-radius: 10px;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+.numpad-display .unit {
+  font-size: 16px;
+  color: var(--text-dim);
+  margin-left: 8px;
+  font-weight: 400;
+}
+
+.numpad-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.nk {
+  border: none;
+  border-radius: 12px;
+  font-family: 'Sora', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  padding: 18px 0;
+  cursor: pointer;
+  transition: all 0.1s;
+  -webkit-tap-highlight-color: transparent;
+}
+.nk:active { transform: scale(0.93); }
+
+.nk-num {
+  background: rgba(255,255,255,0.06);
+  color: var(--text-white);
+}
+.nk-num:active { background: rgba(255,255,255,0.12); }
+
+.nk-op {
+  background: rgba(0,212,255,0.08);
+  color: var(--cyan);
+  font-size: 18px;
+}
+.nk-op:active { background: rgba(0,212,255,0.15); }
+
+.nk-del {
+  background: rgba(255,85,85,0.08);
+  color: var(--red);
+  font-size: 18px;
+}
+.nk-del:active { background: rgba(255,85,85,0.15); }
+
+.nk-ok {
+  background: linear-gradient(135deg, rgba(0,255,136,0.15), rgba(0,212,255,0.15));
+  border: 1px solid rgba(0,255,136,0.25);
+  color: var(--neon);
+  font-size: 18px;
+  font-weight: 800;
+  grid-row: span 2;
+}
+.nk-ok:active { background: linear-gradient(135deg, rgba(0,255,136,0.3), rgba(0,212,255,0.3)); }
+
+.nk-zero { grid-column: span 2; }
+
+/* Make original inputs readonly-looking on mobile */
+@media (max-width: 768px) {
+  input[type="number"] {
+    caret-color: transparent;
+    cursor: pointer;
+  }
+}
+
+/* === HISTORY === */
+.history-item {
+  background: var(--card);
+  border: 1px solid var(--bor);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.history-item .info { font-size: 12px; color: var(--text); }
+.history-item .time { font-size: 10px; color: var(--text-dim); font-family: 'JetBrains Mono'; }
+.history-item .del-btn {
+  background: none;
+  border: none;
+  color: var(--red);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 4px;
+}
+
+/* Footer brand */
+.footer-brand {
+  text-align: center;
+  padding: 32px 16px 16px;
+  font-family: 'JetBrains Mono';
+  font-size: 9px;
+  color: rgba(255,255,255,0.08);
+  letter-spacing: 2px;
+}
+
+/* === ZOOM SCALING === */
+.page { transform-origin: top center; }
+.sec-title { font-size: calc(20px * var(--zoom)); }
+.sec-desc { font-size: calc(12px * var(--zoom)); }
+.card-title { font-size: calc(14px * var(--zoom)); }
+.form-label { font-size: calc(11px * var(--zoom)); }
+input[type="number"], select { font-size: calc(16px * var(--zoom)); padding: calc(12px * var(--zoom)) calc(14px * var(--zoom)); }
+.btn { font-size: calc(14px * var(--zoom)); padding: calc(14px * var(--zoom)); }
+.result-value { font-size: calc(24px * var(--zoom)); }
+.result-row .label { font-size: calc(12px * var(--zoom)); }
+.result-row .val { font-size: calc(15px * var(--zoom)); }
+.nk { font-size: calc(22px * var(--zoom)); padding: calc(18px * var(--zoom)) 0; }
+.numpad-display { font-size: calc(36px * var(--zoom)); }
+.quick-card .emoji { font-size: calc(28px * var(--zoom)); }
+.quick-card .name { font-size: calc(11px * var(--zoom)); }
+.ref-table td, .ref-table th { font-size: calc(12px * var(--zoom)); padding: calc(8px * var(--zoom)) calc(10px * var(--zoom)); }
+
+@media(min-width:600px) {
+  .page { max-width: 500px; margin: 0 auto; }
+}
+/* === LICENSE SCREEN === */
+.license-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.license-screen.hidden { display: none; }
+
+.license-box {
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+.license-logo {
+  margin-bottom: 24px;
+}
+.license-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-white);
+  margin-bottom: 6px;
+}
+.license-subtitle {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-bottom: 28px;
+  line-height: 1.5;
+}
+.license-input {
+  width: 100%;
+  padding: 16px 18px;
+  border: 2px solid var(--bor);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.04);
+  color: var(--text-white);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  outline: none;
+  transition: border-color 0.3s;
+}
+.license-input:focus { border-color: var(--neon); }
+.license-input::placeholder {
+  color: rgba(255,255,255,0.12);
+  letter-spacing: 2px;
+  font-size: 14px;
+}
+[data-theme="light"] .license-input {
+  background: rgba(0,0,0,0.03);
+  color: #111;
+}
+[data-theme="light"] .license-input::placeholder { color: rgba(0,0,0,0.15); }
+
+.license-btn {
+  width: 100%;
+  padding: 16px;
+  border: 1px solid rgba(0,255,136,0.3);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(0,255,136,0.12), rgba(0,212,255,0.12));
+  color: var(--neon);
+  font-family: 'Sora', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 14px;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+.license-btn:active { transform: scale(0.97); }
+[data-theme="light"] .license-btn {
+  background: linear-gradient(135deg, rgba(0,153,102,0.1), rgba(0,104,152,0.1));
+  border-color: rgba(0,153,102,0.3);
+}
+
+.license-error {
+  color: var(--red);
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 12px;
+  min-height: 20px;
+}
+.license-footer {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: rgba(255,255,255,0.08);
+  margin-top: 32px;
+  letter-spacing: 2px;
+}
+[data-theme="light"] .license-footer { color: rgba(0,0,0,0.08); }
+</style>
+</head>
+<body>
+
+<!-- LICENSE ACTIVATION SCREEN -->
+<div class="license-screen" id="licenseScreen">
+  <div class="license-box">
+    <div class="license-logo">
+      <svg width="80" height="80" viewBox="0 0 90 90" fill="none">
+        <defs>
+          <linearGradient id="lg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#b44aff"/><stop offset="50%" stop-color="#00d4ff"/><stop offset="100%" stop-color="#00ff41"/></linearGradient>
+          <filter id="lgw"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <g transform="translate(45,45)">
+          <line x1="-28" y1="-24" x2="-12" y2="-10" stroke="#b44aff" stroke-width=".8" opacity=".35"/>
+          <line x1="28" y1="-24" x2="12" y2="-10" stroke="#00d4ff" stroke-width=".8" opacity=".35"/>
+          <circle cx="-28" cy="-24" r="2.5" fill="#b44aff" opacity=".6"/>
+          <circle cx="28" cy="-24" r="2.5" fill="#00d4ff" opacity=".6"/>
+          <circle cx="-28" cy="24" r="2" fill="#00ff41" opacity=".35"/>
+          <circle cx="28" cy="24" r="2" fill="#b44aff" opacity=".35"/>
+          <rect x="-19" y="-15" width="38" height="30" rx="6" fill="rgba(180,74,255,.06)" stroke="url(#lg1)" stroke-width="1.4" filter="url(#lgw)"/>
+          <text x="0" y="-1" text-anchor="middle" dominant-baseline="central" font-family="Outfit" font-size="17" font-weight="900" fill="url(#lg1)" letter-spacing="2.5" filter="url(#lgw)">AI</text>
+        </g>
+      </svg>
+    </div>
+    <div class="license-title">Toolbox</div>
+    <div class="license-subtitle">Bitte geben Sie Ihren Lizenzschlüssel ein,<br>um die App zu aktivieren.</div>
+    <input class="license-input" id="licenseInput" type="text" placeholder="HW-XXXX-XXXX-XXXX" maxlength="19" autocomplete="off" spellcheck="false">
+    <button class="license-btn" onclick="_0xActivate()">Aktivieren</button>
+    <div class="license-error" id="licenseError"></div>
+    <div class="license-footer">GZ-AI.-STACKS &middot; TOOLBOX</div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-logo">
+    <svg width="26" height="26" viewBox="0 0 32 32" fill="none">
+      <defs><linearGradient id="hl" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#00ff88"/><stop offset="100%" stop-color="#00b4d8"/></linearGradient></defs>
+      <g transform="translate(16,16)"><circle cx="-10" cy="-9" r="1.2" fill="#00ff88" opacity=".45"/><circle cx="10" cy="-9" r="1.2" fill="#00d4ff" opacity=".45"/><rect x="-7" y="-5.5" width="14" height="11" rx="3.5" fill="rgba(0,229,160,.1)" stroke="url(#hl)" stroke-width="1"/><text x="0" y="0" text-anchor="middle" dominant-baseline="central" font-family="Outfit" font-size="7.5" font-weight="900" fill="#fff" letter-spacing="1">AI</text></g>
+    </svg>
+    <div>
+      <div class="header-name">GZ-AI.-STACKS</div>
+      <div class="header-sub">Handwerker-Multitool</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <button class="hdr-btn" onclick="zoomOut()" title="Verkleinern" aria-label="Verkleinern">-</button>
+    <span class="zoom-display" id="zoomDisplay">100%</span>
+    <button class="hdr-btn" onclick="zoomIn()" title="Vergrößern" aria-label="Vergrößern">+</button>
+    <button class="hdr-btn" onclick="toggleTheme()" id="themeBtn" title="Hell/Dunkel" aria-label="Modus wechseln">&#9788;</button>
+    <div class="offline-dot" id="statusDot" title="Online"></div>
+    <button class="install-btn" id="installBtn" onclick="installApp()">Installieren</button>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════
+     PAGE: BAU-RECHNER
+     ═══════════════════════════════════════════ -->
+<div class="page active" id="page-bau">
+  <div class="sec-title">Bau-Rechner</div>
+  <div class="sec-desc">Flächen, Volumen & Materialbedarf berechnen</div>
+
+  <!-- FLÄCHE -->
+  <div class="card">
+    <div class="card-title"><span class="icon green">&#9634;</span> Flächenberechnung</div>
+    <div class="form-group">
+      <label class="form-label">Form</label>
+      <select id="bauForm" onchange="toggleBauFields()">
+        <option value="rect">Rechteck</option>
+        <option value="tri">Dreieck</option>
+        <option value="circle">Kreis</option>
+        <option value="trapez">Trapez</option>
+      </select>
+    </div>
+    <div class="form-row" id="bauFields1">
+      <div class="form-group">
+        <label class="form-label">Länge (m)</label>
+        <input type="number" id="bauL" placeholder="0.00" step="0.01" inputmode="decimal">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Breite (m)</label>
+        <input type="number" id="bauB" placeholder="0.00" step="0.01" inputmode="decimal">
+      </div>
+    </div>
+    <div class="form-row" id="bauFields2" style="display:none">
+      <div class="form-group">
+        <label class="form-label">Seite a (m)</label>
+        <input type="number" id="bauA" placeholder="0.00" step="0.01" inputmode="decimal">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Seite b (m)</label>
+        <input type="number" id="bauA2" placeholder="0.00" step="0.01" inputmode="decimal">
+      </div>
+    </div>
+    <div class="form-group" id="bauRadField" style="display:none">
+      <label class="form-label">Radius (m)</label>
+      <input type="number" id="bauR" placeholder="0.00" step="0.01" inputmode="decimal">
+    </div>
+    <div class="form-group" id="bauHField" style="display:none">
+      <label class="form-label">Höhe (m)</label>
+      <input type="number" id="bauH" placeholder="0.00" step="0.01" inputmode="decimal">
+    </div>
+    <button class="btn btn-primary" onclick="calcFlaeche()">Berechnen</button>
+    <div class="result" id="resFl">
+      <div class="result-label">Fläche</div>
+      <div class="result-value" id="resFlVal">—</div>
+    </div>
+  </div>
+
+  <!-- VOLUMEN -->
+  <div class="card">
+    <div class="card-title"><span class="icon blue">&#9635;</span> Volumenberechnung</div>
+    <div class="form-group">
+      <label class="form-label">Form</label>
+      <select id="volForm">
+        <option value="quader">Quader</option>
+        <option value="zyl">Zylinder</option>
+      </select>
+    </div>
+    <div class="form-row three">
+      <div class="form-group">
+        <label class="form-label">L (m)</label>
+        <input type="number" id="volL" placeholder="0" step="0.01" inputmode="decimal">
+      </div>
+      <div class="form-group">
+        <label class="form-label">B (m)</label>
+        <input type="number" id="volB" placeholder="0" step="0.01" inputmode="decimal">
+      </div>
+      <div class="form-group">
+        <label class="form-label">H (m)</label>
+        <input type="number" id="volH" placeholder="0" step="0.01" inputmode="decimal">
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="calcVolumen()">Berechnen</button>
+    <div class="result" id="resVol">
+      <div class="result-label">Volumen</div>
+      <div class="result-value" id="resVolVal">—</div>
+    </div>
+  </div>
+
+  <!-- MATERIAL -->
+  <div class="card">
+    <div class="card-title"><span class="icon amber">&#9881;</span> Materialbedarf</div>
+    <div class="form-group">
+      <label class="form-label">Material</label>
+      <select id="matType">
+        <option value="beton">Beton (C25/30)</option>
+        <option value="estrich">Estrich</option>
+        <option value="putz">Putz (Innen)</option>
+        <option value="putzA">Putz (Außen)</option>
+        <option value="farbe">Wandfarbe</option>
+        <option value="moertel">Mörtel</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Fläche (m²)</label>
+        <input type="number" id="matFl" placeholder="0" step="0.1" inputmode="decimal">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Dicke (cm)</label>
+        <input type="number" id="matD" placeholder="0" step="0.1" inputmode="decimal" value="10">
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="calcMaterial()">Berechnen</button>
+    <div class="result" id="resMat">
+      <div class="result-row">
+        <span class="label">Volumen</span>
+        <span class="val" id="matVol">—</span>
+      </div>
+      <div class="result-row">
+        <span class="label">Gewicht</span>
+        <span class="val cyan" id="matGew">—</span>
+      </div>
+      <div class="result-row">
+        <span class="label">Zement (25kg Säcke)</span>
+        <span class="val amber" id="matZem">—</span>
+      </div>
+      <div class="result-row">
+        <span class="label">Sand/Kies</span>
+        <span class="val purple" id="matSand">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MISCHVERHÄLTNISSE -->
+  <div class="accordion-header" onclick="toggleAccordion(this)">
+    <span class="title">&#128214; Mischverhältnisse</span>
+    <span class="arrow">&#9660;</span>
+  </div>
+  <div class="accordion-body">
+    <table class="ref-table">
+      <tr><th>Material</th><th>Zement</th><th>Sand/Kies</th><th>Wasser</th></tr>
+      <tr><td>Beton C25/30</td><td>1 Teil</td><td>4 Teile</td><td>0.5 Teile</td></tr>
+      <tr><td>Estrich</td><td>1 Teil</td><td>3 Teile</td><td>0.5 Teile</td></tr>
+      <tr><td>Mauermörtel</td><td>1 Teil</td><td>4 Teile</td><td>0.8 Teile</td></tr>
+      <tr><td>Putzmörtel</td><td>1 Teil</td><td>5 Teile</td><td>1 Teil</td></tr>
+      <tr><td>Fließestrich</td><td>1 Teil</td><td>3.5 Teile</td><td>0.6 Teile</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE: ELEKTRO
+     ═══════════════════════════════════════════ -->
+<div class="page" id="page-elektro">
+  <div class="sec-title">Elektro-Helfer</div>
+  <div class="sec-desc">Kabelquerschnitt, Absicherung & Leistung</div>
+
+  <!-- KABELQUERSCHNITT -->
+  <div class="card">
+    <div class="card-title"><span class="icon green">&#9889;</span> Kabelquerschnitt</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Leistung (W)</label>
+        <input type="number" id="elP" placeholder="0" inputmode="numeric">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Spannung (V)</label>
+        <select id="elU">
+          <option value="230">230V (1-phasig)</option>
+          <option value="400">400V (3-phasig)</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Leitungslänge (m)</label>
+        <input type="number" id="elLen" placeholder="0" step="0.1" inputmode="decimal">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Material</label>
+        <select id="elMat">
+          <option value="cu">Kupfer</option>
+          <option value="al">Aluminium</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="calcKabel()">Berechnen</button>
+    <div class="result" id="resKabel">
+      <div class="result-row">
+        <span class="label">Strom</span>
+        <span class="val" id="elStrom">—</span>
+      </div>
+      <div class="result-row">
+        <span class="label">Min. Querschnitt</span>
+        <span class="val cyan" id="elQuer">—</span>
+      </div>
+      <div class="result-row">
+        <span class="label">Empfohlenes Kabel</span>
+        <span class="val amber" id="elKabel">—</span>
+      </div>
+      <div class="result-row">
+        <span class="label">Spannungsabfall</span>
+        <span class="val purple" id="elDrop">—</span>
+      </div>
+      <div class="result-row">
+        <span class="label">Absicherung</span>
+        <span class="val" id="elSich">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEISTUNGSRECHNER -->
+  <div class="card">
+    <div class="card-title"><span class="icon blue">&#128268;</span> Leistungsrechner</div>
+    <div class="form-group">
+      <label class="form-label">Berechne aus</label>
+      <select id="elCalcMode" onchange="toggleElFields()">
+        <option value="pui">P = U × I (Leistung)</option>
+        <option value="uri">U = R × I (Spannung)</option>
+        <option value="pri">P = I² × R (Verlust)</option>
+      </select>
+    </div>
+    <div class="form-row" id="elCalcFields">
+      <div class="form-group">
+        <label class="form-label" id="elCalcL1">Spannung (V)</label>
+        <input type="number" id="elCalcV1" placeholder="0" step="0.1" inputmode="decimal">
+      </div>
+      <div class="form-group">
+        <label class="form-label" id="elCalcL2">Strom (A)</label>
+        <input type="number" id="elCalcV2" placeholder="0" step="0.1" inputmode="decimal">
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="calcLeistung()">Berechnen</button>
+    <div class="result" id="resLeist">
+      <div class="result-label" id="resLeistLabel">Ergebnis</div>
+      <div class="result-value" id="resLeistVal">—</div>
+    </div>
+  </div>
+
+  <!-- REFERENZ -->
+  <div class="accordion-header" onclick="toggleAccordion(this)">
+    <span class="title">&#128214; Absicherungs-Tabelle</span>
+    <span class="arrow">&#9660;</span>
+  </div>
+  <div class="accordion-body">
+    <table class="ref-table">
+      <tr><th>Querschnitt</th><th>Sicherung</th><th>Max. Leistung 230V</th></tr>
+      <tr><td>1.5 mm²</td><td>16 A</td><td>3.680 W</td></tr>
+      <tr><td>2.5 mm²</td><td>20 A</td><td>4.600 W</td></tr>
+      <tr><td>4.0 mm²</td><td>25 A</td><td>5.750 W</td></tr>
+      <tr><td>6.0 mm²</td><td>32 A</td><td>7.360 W</td></tr>
+      <tr><td>10 mm²</td><td>50 A</td><td>11.500 W</td></tr>
+      <tr><td>16 mm²</td><td>63 A</td><td>14.490 W</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE: FLIESEN
+     ═══════════════════════════════════════════ -->
+<div class="page" id="page-fliesen">
+  <div class="sec-title">Fliesenleger-Tool</div>
+  <div class="sec-desc">Flächenbedarf, Verschnitt & Material</div>
+
+  <!-- FLIESEN RECHNER -->
+  <div class="card">
+    <div class="card-title"><span class="icon green">&#9638;</span> Fliesenbedarf</div>
+    <div class="form-group">
+      <label class="form-label">Raumfläche</label>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Länge (m)</label>
+        <input type="number" id="flRaumL" placeholder="0" step="0.01" inputmode="decimal">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Breite (m)</label>
+        <input type="number" id="flRaumB" placeholder="0" step="0.01" inputmode="decimal">
+      </div>
+    </div>
+    <div class="form-group" style="margin-top:8px">
+      <label class="form-label">Fliesengröße</label>
+    </div>
+    <div class="form-row three">
+      <div class="form-group">
+        <label class="form-label">L (cm)</label>
+        <input type="number" id="flFlL" placeholder="60" value="60" inputmode="numeric">
+      </div>
+      <div class="form-group">
+        <label class="form-label">B (cm)</label>
+        <input type="number" id="flFlB" placeholder="30" value="30" inputmode="numeric">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Fuge (mm)</label>
+        <input type="number" id="flFuge" placeholder="3" value="3" inputmode="numeric">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Verschnitt (%)</label>
+        <select id="flVersch">
+          <option value="5">5% (gerade)</option>
+          <option value="10" selected>10% (Standard)</option>
+          <option value="15">15% (diagonal)</option>
+          <option value="20">20% (komplex)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Verlegemuster</label>
+        <select id="flMuster">
+          <option value="gerade">Gerade</option>
+          <option value="halb">Halbverband</option>
+          <option value="drittel">Drittelverband</option>
+          <option value="diagonal">Diagonal</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="calcFliesen()">Berechnen</button>
+    <div class="result" id="resFl2">
+      <div class="result-row">
+        <span class="label">Raumfläche</span>
+        <span class="val" id="flArea">—</span>
+      </div>
+      <div class="result-row">
+        <span class="label">Fliesen pro m²</span>
+        <span class="val cyan" id="flProM2">—</span>
+      </div>
+      <div class="result-row">
+        <span class="label">Benötigte Fliesen</span>
+        <span class="val amber" id="flAnz">—</span>
+      </div>
+      <div class="result-row">
+        <span class="label">Davon Verschnitt</span>
+        <span class="val purple" id="flVerAn">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- KLEBER & FUGENMASSE -->
+  <div class="card">
+    <div class="card-title"><span class="icon blue">&#128230;</span> Kleber & Fugenmasse</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Fläche (m²)</label>
+        <input type="number" id="fmFl" placeholder="0" step="0.1" inputmode="decimal">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Zahnspachtel</label>
+        <select id="fmZahn">
+          <option value="3">3mm</option>
+          <option value="6" selected>6mm</option>
+          <option value="8">8mm</option>
+          <option value="10">10mm</option>
+          <option value="12">12mm</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Fliesenstärke (mm)</label>
+        <input type="number" id="fmStaerke" placeholder="8" value="8" inputmode="numeric">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Fugenbreite (mm)</label>
+        <input type="number" id="fmFugeB" placeholder="3" value="3" inputmode="numeric">
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="calcKleberFuge()">Berechnen</button>
+    <div class="result" id="resFM">
+      <div class="result-row">
+        <span class="label">Fliesenkleber (kg)</span>
+        <span class="val" id="fmKleber">—</span>
+      </div>
+      <div class="result-row">
+        <span class="label">Kleber-Säcke (25kg)</span>
+        <span class="val cyan" id="fmKleberS">—</span>
+      </div>
+      <div class="result-row">
+        <span class="label">Fugenmasse (kg)</span>
+        <span class="val amber" id="fmFuge">—</span>
+      </div>
+      <div class="result-row">
+        <span class="label">Fugen-Säcke (5kg)</span>
+        <span class="val purple" id="fmFugeS">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- VERLEGEMUSTER REFERENZ -->
+  <div class="accordion-header" onclick="toggleAccordion(this)">
+    <span class="title">&#128214; Verlegemuster-Info</span>
+    <span class="arrow">&#9660;</span>
+  </div>
+  <div class="accordion-body">
+    <table class="ref-table">
+      <tr><th>Muster</th><th>Verschnitt</th><th>Schwierigkeit</th></tr>
+      <tr><td>Gerade</td><td>5-8%</td><td>Einfach</td></tr>
+      <tr><td>Halbverband</td><td>8-12%</td><td>Mittel</td></tr>
+      <tr><td>Drittelverband</td><td>10-12%</td><td>Mittel</td></tr>
+      <tr><td>Diagonal (45°)</td><td>12-18%</td><td>Schwer</td></tr>
+      <tr><td>Fischgrät</td><td>15-20%</td><td>Schwer</td></tr>
+      <tr><td>Römischer Verband</td><td>5-10%</td><td>Mittel</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE: MEHR
+     ═══════════════════════════════════════════ -->
+<div class="page" id="page-mehr">
+  <div class="sec-title">Werkzeugkasten</div>
+  <div class="sec-desc">Schnelle Tools & Umrechner</div>
+
+  <div class="quick-grid">
+    <div class="quick-card" onclick="showTool('umrechner')">
+      <div class="emoji">&#128207;</div>
+      <div class="name">Einheiten-Umrechner</div>
+    </div>
+    <div class="quick-card" onclick="showTool('pythagoras')">
+      <div class="emoji">&#128208;</div>
+      <div class="name">Pythagoras</div>
+    </div>
+    <div class="quick-card" onclick="showTool('prozent')">
+      <div class="emoji">&#37;</div>
+      <div class="name">Prozent-Rechner</div>
+    </div>
+    <div class="quick-card" onclick="showTool('gefaelle')">
+      <div class="emoji">&#8600;</div>
+      <div class="name">Gefälle-Rechner</div>
+    </div>
+  </div>
+
+  <!-- UMRECHNER -->
+  <div class="card" id="tool-umrechner" style="display:none">
+    <div class="card-title"><span class="icon green">&#128207;</span> Einheiten-Umrechner</div>
+    <div class="form-group">
+      <label class="form-label">Kategorie</label>
+      <select id="umKat" onchange="updateUmrechner()">
+        <option value="laenge">Länge</option>
+        <option value="flaeche">Fläche</option>
+        <option value="volumen">Volumen</option>
+        <option value="gewicht">Gewicht</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Wert</label>
+        <input type="number" id="umVal" placeholder="0" step="any" inputmode="decimal" oninput="convertUnit()">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Von</label>
+        <select id="umVon" onchange="convertUnit()"></select>
+      </div>
+    </div>
+    <div class="result show" id="resUm">
+      <div id="umResults"></div>
+    </div>
+  </div>
+
+  <!-- PYTHAGORAS -->
+  <div class="card" id="tool-pythagoras" style="display:none">
+    <div class="card-title"><span class="icon blue">&#128208;</span> Pythagoras (a² + b² = c²)</div>
+    <div class="form-row three">
+      <div class="form-group">
+        <label class="form-label">a (m)</label>
+        <input type="number" id="pyA" placeholder="0" step="0.01" inputmode="decimal">
+      </div>
+      <div class="form-group">
+        <label class="form-label">b (m)</label>
+        <input type="number" id="pyB" placeholder="0" step="0.01" inputmode="decimal">
+      </div>
+      <div class="form-group">
+        <label class="form-label">c (m)</label>
+        <input type="number" id="pyC" placeholder="?" step="0.01" inputmode="decimal">
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="calcPyth()">Berechnen</button>
+    <div class="result" id="resPyth">
+      <div class="result-label">Ergebnis</div>
+      <div class="result-value" id="resPythVal">—</div>
+    </div>
+  </div>
+
+  <!-- PROZENT -->
+  <div class="card" id="tool-prozent" style="display:none">
+    <div class="card-title"><span class="icon amber">%</span> Prozent-Rechner</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Grundwert</label>
+        <input type="number" id="prGrund" placeholder="0" step="any" inputmode="decimal">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Prozent (%)</label>
+        <input type="number" id="prProz" placeholder="0" step="any" inputmode="decimal">
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="calcProzent()">Berechnen</button>
+    <div class="result" id="resPr">
+      <div class="result-row"><span class="label">Prozentwert</span><span class="val" id="prWert">—</span></div>
+      <div class="result-row"><span class="label">Erhöht (+%)</span><span class="val cyan" id="prPlus">—</span></div>
+      <div class="result-row"><span class="label">Vermindert (-%)</span><span class="val amber" id="prMinus">—</span></div>
+    </div>
+  </div>
+
+  <!-- GEFÄLLE -->
+  <div class="card" id="tool-gefaelle" style="display:none">
+    <div class="card-title"><span class="icon purple">&#8600;</span> Gefälle-Rechner</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Strecke (m)</label>
+        <input type="number" id="geStr" placeholder="0" step="0.01" inputmode="decimal">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Gefälle (%)</label>
+        <input type="number" id="gePro" placeholder="2" value="2" step="0.1" inputmode="decimal">
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="calcGefaelle()">Berechnen</button>
+    <div class="result" id="resGef">
+      <div class="result-row"><span class="label">Höhendifferenz</span><span class="val" id="geHoehe">—</span></div>
+      <div class="result-row"><span class="label">Winkel</span><span class="val cyan" id="geWinkel">—</span></div>
+      <div class="result-row"><span class="label">Verhältnis</span><span class="val amber" id="geVerh">—</span></div>
+    </div>
+  </div>
+
+  <div class="footer-brand">GZ-AI.-STACKS · TOOLBOX · 2026</div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-item active" onclick="switchPage('bau')" data-page="bau">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 7l9-4 9 4M6 7v14M18 7v14M9 21V10h6v11"/></svg>
+    Bau
+  </button>
+  <button class="nav-item" onclick="switchPage('elektro')" data-page="elektro">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+    Elektro
+  </button>
+  <button class="nav-item" onclick="switchPage('fliesen')" data-page="fliesen">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Fliesen
+  </button>
+  <button class="nav-item" onclick="switchPage('mehr')" data-page="mehr">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+    Mehr
+  </button>
+</nav>
+
+<!-- NUMPAD OVERLAY -->
+<div class="numpad-overlay" id="numpadOverlay" onclick="if(event.target===this)closeNumpad()">
+  <div class="numpad">
+    <div class="numpad-header">
+      <span class="numpad-label" id="numpadLabel">Wert eingeben</span>
+      <button class="nk nk-del" style="padding:8px 16px;font-size:14px" onclick="closeNumpad()">Abbrechen</button>
+    </div>
+    <div class="numpad-display" id="numpadDisplay">0<span class="unit" id="numpadUnit"></span></div>
+    <div class="numpad-grid">
+      <button class="nk nk-num" onclick="numKey('7')">7</button>
+      <button class="nk nk-num" onclick="numKey('8')">8</button>
+      <button class="nk nk-num" onclick="numKey('9')">9</button>
+      <button class="nk nk-del" onclick="numDel()">&#9003;</button>
+      <button class="nk nk-num" onclick="numKey('4')">4</button>
+      <button class="nk nk-num" onclick="numKey('5')">5</button>
+      <button class="nk nk-num" onclick="numKey('6')">6</button>
+      <button class="nk nk-ok" onclick="numOk()">&#10003;</button>
+      <button class="nk nk-num" onclick="numKey('1')">1</button>
+      <button class="nk nk-num" onclick="numKey('2')">2</button>
+      <button class="nk nk-num" onclick="numKey('3')">3</button>
+      <button class="nk nk-num nk-zero" onclick="numKey('0')">0</button>
+      <button class="nk nk-op" onclick="numKey('.')">.</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// === LICENSE SYSTEM (obfuscated) ===
+// Key format: HW-XXXX-XXXX-XXXX
+// Validation: HMAC-like hash check using a seed
+const _0x4a2f = ['\x68\x77\x2d\x6c\x69\x63\x65\x6e\x73\x65','\x73\x65\x74\x49\x74\x65\x6d','\x67\x65\x74\x49\x74\x65\x6d'];
+const _0xSTORE = _0x4a2f[0];
+
+function _0xHash(s) {
+  let h = 0x7A39E1B;
+  for (let i = 0; i < s.length; i++) {
+    h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+    h = (h ^ (h >>> 16)) | 0;
+    h = (h * 0x45d9f3b) | 0;
+  }
+  return Math.abs(h);
+}
+
+function _0xGenCheck(parts) {
+  const seed = 0x48574B; // HWK
+  const p1 = _0xHash(parts[0] + 'gz');
+  const p2 = _0xHash(parts[1] + 'ai');
+  const combined = (p1 ^ p2 ^ seed) >>> 0;
+  const check = (combined % 89990) + 10000;
+  return check.toString().substring(0, 4);
+}
+
+function _0xValidate(key) {
+  if (!key) return false;
+  const k = key.toUpperCase().trim();
+  // Format: HW-XXXX-XXXX-XXXX
+  const regex = /^HW-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$/;
+  const m = k.match(regex);
+  if (!m) return false;
+  // Part 3 must be a valid checksum of parts 1+2
+  const expected = _0xGenCheck([m[1], m[2]]);
+  return m[3] === expected;
+}
+
+function _0xActivate() {
+  const input = document.getElementById('licenseInput');
+  const error = document.getElementById('licenseError');
+  const key = input.value.trim().toUpperCase();
+
+  if (!key) {
+    error.textContent = 'Bitte Lizenzschlüssel eingeben';
+    return;
+  }
+  if (_0xValidate(key)) {
+    localStorage[_0x4a2f[1]](_0xSTORE, key);
+    document.getElementById('licenseScreen').classList.add('hidden');
+    error.textContent = '';
+    showToast('Lizenz aktiviert!');
+  } else {
+    error.textContent = 'Ungültiger Lizenzschlüssel';
+    input.style.borderColor = '#ff5555';
+    setTimeout(() => { input.style.borderColor = ''; }, 2000);
+  }
+}
+
+// Check license on load
+(function _0xCheckLicense() {
+  const stored = localStorage[_0x4a2f[2]](_0xSTORE);
+  if (stored && _0xValidate(stored)) {
+    document.getElementById('licenseScreen').classList.add('hidden');
+  }
+})();
+
+// Format input with dashes
+document.getElementById('licenseInput').addEventListener('input', function(e) {
+  let v = this.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+  if (v.length > 2 && !v.startsWith('HW')) {
+    v = 'HW' + v.substring(2);
+  }
+  let formatted = '';
+  if (v.length > 0) formatted = v.substring(0, 2);
+  if (v.length > 2) formatted += '-' + v.substring(2, 6);
+  if (v.length > 6) formatted += '-' + v.substring(6, 10);
+  if (v.length > 10) formatted += '-' + v.substring(10, 14);
+  this.value = formatted;
+});
+
+// === THEME (3 Modi: dark → light → retro) ===
+const themes = ['dark', 'light', 'baustelle', 'retro'];
+const themeIcons = { dark: '&#9788;', light: '&#9790;', baustelle: '&#9888;', retro: '&#9000;' };
+const themeColors = { dark: '#0a0e12', light: '#f2f4f6', baustelle: '#f5f0e0', retro: '#0a0a00' };
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const current = html.getAttribute('data-theme') || 'dark';
+  const idx = themes.indexOf(current);
+  const next = themes[(idx + 1) % themes.length];
+  html.setAttribute('data-theme', next);
+  document.getElementById('themeBtn').innerHTML = themeIcons[next];
+  document.getElementById('themeBtn').title = {dark:'Dunkel',light:'Hell',baustelle:'Baustelle',retro:'Retro'}[next];
+  localStorage.setItem('hw-theme', next);
+  document.querySelector('meta[name="theme-color"]').content = themeColors[next];
+}
+
+// Load saved theme
+(function() {
+  const saved = localStorage.getItem('hw-theme');
+  if (saved && themes.includes(saved)) {
+    document.documentElement.setAttribute('data-theme', saved);
+    document.getElementById('themeBtn').innerHTML = themeIcons[saved];
+    document.querySelector('meta[name="theme-color"]').content = themeColors[saved];
+  }
+})();
+
+// === ZOOM ===
+let zoomLevel = parseFloat(localStorage.getItem('hw-zoom') || '1');
+applyZoom();
+
+function zoomIn() {
+  if (zoomLevel >= 1.5) return;
+  zoomLevel = Math.round((zoomLevel + 0.1) * 10) / 10;
+  applyZoom();
+}
+function zoomOut() {
+  if (zoomLevel <= 0.7) return;
+  zoomLevel = Math.round((zoomLevel - 0.1) * 10) / 10;
+  applyZoom();
+}
+function applyZoom() {
+  document.documentElement.style.setProperty('--zoom', zoomLevel);
+  document.getElementById('zoomDisplay').textContent = Math.round(zoomLevel * 100) + '%';
+  localStorage.setItem('hw-zoom', zoomLevel);
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && (e.key === '+' || e.key === '=')) { e.preventDefault(); zoomIn(); }
+  if ((e.ctrlKey || e.metaKey) && e.key === '-') { e.preventDefault(); zoomOut(); }
+});
+
+// === NUMPAD ===
+let numpadTarget = null;
+let numpadValue = '';
+
+function openNumpad(input) {
+  numpadTarget = input;
+  numpadValue = input.value || '';
+  const label = input.closest('.form-group')?.querySelector('.form-label')?.textContent || 'Wert eingeben';
+  document.getElementById('numpadLabel').textContent = label;
+  updateNumpadDisplay();
+  document.getElementById('numpadOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeNumpad() {
+  document.getElementById('numpadOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+  numpadTarget = null;
+}
+
+function numKey(k) {
+  if (k === '.' && numpadValue.includes('.')) return;
+  if (numpadValue === '0' && k !== '.') numpadValue = '';
+  numpadValue += k;
+  updateNumpadDisplay();
+}
+
+function numDel() {
+  numpadValue = numpadValue.slice(0, -1);
+  if (!numpadValue) numpadValue = '';
+  updateNumpadDisplay();
+}
+
+function numOk() {
+  if (numpadTarget) {
+    numpadTarget.value = numpadValue || '';
+    numpadTarget.dispatchEvent(new Event('input', { bubbles: true }));
+    numpadTarget.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+  closeNumpad();
+}
+
+function updateNumpadDisplay() {
+  const display = document.getElementById('numpadDisplay');
+  const unit = document.getElementById('numpadUnit');
+  display.innerHTML = (numpadValue || '0') + '<span class="unit" id="numpadUnit">' + getUnit() + '</span>';
+}
+
+function getUnit() {
+  if (!numpadTarget) return '';
+  const label = numpadTarget.closest('.form-group')?.querySelector('.form-label')?.textContent || '';
+  if (label.includes('(m²)')) return 'm²';
+  if (label.includes('(m³)')) return 'm³';
+  if (label.includes('(m)') || label.includes('L (m)') || label.includes('B (m)') || label.includes('H (m)')) return 'm';
+  if (label.includes('(cm)')) return 'cm';
+  if (label.includes('(mm)')) return 'mm';
+  if (label.includes('(W)')) return 'W';
+  if (label.includes('(V)')) return 'V';
+  if (label.includes('(A)')) return 'A';
+  if (label.includes('(%)') || label.includes('(%)')) return '%';
+  return '';
+}
+
+// Attach numpad to all number inputs on mobile
+function initNumpad() {
+  const isMobile = window.matchMedia('(max-width: 768px)').matches || 'ontouchstart' in window;
+  if (!isMobile) return;
+
+  document.querySelectorAll('input[type="number"]').forEach(input => {
+    input.setAttribute('readonly', '');
+    input.addEventListener('click', (e) => {
+      e.preventDefault();
+      openNumpad(input);
+    });
+    input.addEventListener('focus', (e) => {
+      e.preventDefault();
+      input.blur();
+      openNumpad(input);
+    });
+  });
+}
+
+// Run on load + after any DOM changes
+document.addEventListener('DOMContentLoaded', initNumpad);
+window.addEventListener('load', initNumpad);
+
+// === NAVIGATION ===
+function switchPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(`page-${page}`).classList.add('active');
+  document.querySelector(`[data-page="${page}"]`).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// === TOAST ===
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// === ACCORDION ===
+function toggleAccordion(el) {
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+
+// === BAU: FLÄCHE ===
+function toggleBauFields() {
+  const f = document.getElementById('bauForm').value;
+  document.getElementById('bauFields1').style.display = (f === 'rect') ? 'grid' : 'none';
+  document.getElementById('bauFields2').style.display = (f === 'trapez') ? 'grid' : 'none';
+  document.getElementById('bauRadField').style.display = (f === 'circle') ? 'block' : 'none';
+  document.getElementById('bauHField').style.display = (f === 'tri' || f === 'trapez') ? 'block' : 'none';
+  if (f === 'tri') {
+    document.getElementById('bauFields1').style.display = 'grid';
+    document.querySelector('#bauFields1 .form-label').textContent = 'Grundseite (m)';
+  } else {
+    document.querySelector('#bauFields1 .form-label').textContent = 'Länge (m)';
+  }
+}
+
+function calcFlaeche() {
+  const f = document.getElementById('bauForm').value;
+  let area = 0;
+  if (f === 'rect') {
+    area = pf('bauL') * pf('bauB');
+  } else if (f === 'tri') {
+    area = (pf('bauL') * pf('bauH')) / 2;
+  } else if (f === 'circle') {
+    area = Math.PI * Math.pow(pf('bauR'), 2);
+  } else if (f === 'trapez') {
+    area = ((pf('bauA') + pf('bauA2')) / 2) * pf('bauH');
+  }
+  if (area > 0) {
+    show('resFl');
+    document.getElementById('resFlVal').textContent = fmt(area) + ' m²';
+    saveHistory('Fläche', fmt(area) + ' m²');
+  }
+}
+
+// === BAU: VOLUMEN ===
+function calcVolumen() {
+  const f = document.getElementById('volForm').value;
+  let vol = 0;
+  if (f === 'quader') {
+    vol = pf('volL') * pf('volB') * pf('volH');
+  } else {
+    vol = Math.PI * Math.pow(pf('volL'), 2) * pf('volH');
+  }
+  if (vol > 0) {
+    show('resVol');
+    document.getElementById('resVolVal').textContent = fmt(vol) + ' m³ (' + fmt(vol * 1000) + ' L)';
+    saveHistory('Volumen', fmt(vol) + ' m³');
+  }
+}
+
+// === BAU: MATERIAL ===
+function calcMaterial() {
+  const type = document.getElementById('matType').value;
+  const fl = pf('matFl');
+  const d = pf('matD') / 100;
+  const vol = fl * d;
+  if (vol <= 0) return;
+
+  const data = {
+    beton:  { dichte: 2400, zement: 300, sand: 1800, name: 'Beton' },
+    estrich:{ dichte: 2100, zement: 350, sand: 1600, name: 'Estrich' },
+    putz:   { dichte: 1800, zement: 250, sand: 1400, name: 'Putz Innen' },
+    putzA:  { dichte: 1900, zement: 280, sand: 1500, name: 'Putz Außen' },
+    farbe:  { dichte: 150, zement: 0, sand: 0, name: 'Farbe', perM2: true },
+    moertel:{ dichte: 1800, zement: 300, sand: 1400, name: 'Mörtel' }
+  };
+
+  const m = data[type];
+  let gew, zem, sand;
+
+  if (m.perM2) {
+    gew = fl * 0.15;
+    zem = 0;
+    sand = 0;
+    document.getElementById('matGew').textContent = fmt(gew) + ' L (' + fmt(gew / 10) + ' Eimer)';
+    document.getElementById('matZem').textContent = '—';
+    document.getElementById('matSand').textContent = '—';
+  } else {
+    gew = vol * m.dichte;
+    zem = vol * m.zement;
+    sand = vol * m.sand;
+    document.getElementById('matGew').textContent = fmt(gew) + ' kg';
+    document.getElementById('matZem').textContent = Math.ceil(zem / 25) + ' Säcke (' + fmt(zem) + ' kg)';
+    document.getElementById('matSand').textContent = fmt(sand) + ' kg';
+  }
+  document.getElementById('matVol').textContent = fmt(vol) + ' m³';
+  show('resMat');
+  saveHistory(m.name, fmt(vol) + ' m³, ' + fmt(gew) + ' kg');
+}
+
+// === ELEKTRO: KABEL ===
+function calcKabel() {
+  const p = pf('elP');
+  const u = parseFloat(document.getElementById('elU').value);
+  const len = pf('elLen');
+  const mat = document.getElementById('elMat').value;
+  const kappa = mat === 'cu' ? 56 : 35;
+
+  if (p <= 0 || len <= 0) return;
+
+  const cos = u === 400 ? 0.85 : 1;
+  const phase = u === 400 ? 3 : 1;
+  const I = u === 400 ? p / (Math.sqrt(3) * u * cos) : p / (u * cos);
+  const factor = u === 400 ? Math.sqrt(3) : 2;
+  const maxDrop = u * 0.03;
+  const qMin = (factor * len * I) / (kappa * maxDrop);
+
+  const standards = [1.5, 2.5, 4, 6, 10, 16, 25, 35, 50];
+  const maxAmps = { 1.5:16, 2.5:20, 4:25, 6:32, 10:50, 16:63, 25:80, 35:100, 50:125 };
+  let q = standards.find(s => s >= qMin && maxAmps[s] >= I) || standards[standards.length - 1];
+
+  const drop = (factor * len * I) / (kappa * q);
+  const dropPct = (drop / u) * 100;
+
+  const sicherungen = [10, 13, 16, 20, 25, 32, 40, 50, 63];
+  let sich = sicherungen.find(s => s >= I) || '> 63';
+
+  document.getElementById('elStrom').textContent = fmt(I) + ' A';
+  document.getElementById('elQuer').textContent = q + ' mm²';
+  document.getElementById('elKabel').textContent = (u === 400 ? '5' : '3') + 'x' + q + ' mm² NYM';
+  document.getElementById('elDrop').textContent = fmt(drop) + ' V (' + fmt(dropPct) + '%)';
+  document.getElementById('elSich').textContent = sich + ' A';
+  show('resKabel');
+  saveHistory('Kabel', q + 'mm², ' + sich + 'A, ' + fmt(I) + 'A');
+}
+
+// === ELEKTRO: LEISTUNG ===
+function toggleElFields() {
+  const m = document.getElementById('elCalcMode').value;
+  const l1 = document.getElementById('elCalcL1');
+  const l2 = document.getElementById('elCalcL2');
+  if (m === 'pui') { l1.textContent = 'Spannung (V)'; l2.textContent = 'Strom (A)'; }
+  else if (m === 'uri') { l1.textContent = 'Widerstand (Ω)'; l2.textContent = 'Strom (A)'; }
+  else { l1.textContent = 'Strom (A)'; l2.textContent = 'Widerstand (Ω)'; }
+}
+
+function calcLeistung() {
+  const m = document.getElementById('elCalcMode').value;
+  const v1 = pf('elCalcV1');
+  const v2 = pf('elCalcV2');
+  if (v1 <= 0 || v2 <= 0) return;
+  let res, label;
+  if (m === 'pui') { res = v1 * v2; label = 'Leistung'; document.getElementById('resLeistVal').textContent = fmt(res) + ' W (' + fmt(res/1000) + ' kW)'; }
+  else if (m === 'uri') { res = v1 * v2; label = 'Spannung'; document.getElementById('resLeistVal').textContent = fmt(res) + ' V'; }
+  else { res = v2 * v1 * v1; label = 'Verlustleistung'; document.getElementById('resLeistVal').textContent = fmt(res) + ' W'; }
+  document.getElementById('resLeistLabel').textContent = label;
+  show('resLeist');
+}
+
+// === FLIESEN ===
+function calcFliesen() {
+  const rL = pf('flRaumL'), rB = pf('flRaumB');
+  const fL = pf('flFlL') / 100, fB = pf('flFlB') / 100;
+  const fuge = pf('flFuge') / 1000;
+  const versch = parseInt(document.getElementById('flVersch').value);
+  if (rL <= 0 || rB <= 0 || fL <= 0 || fB <= 0) return;
+
+  const area = rL * rB;
+  const flieseArea = (fL + fuge) * (fB + fuge);
+  const proM2 = 1 / flieseArea;
+  const netto = Math.ceil(area * proM2);
+  const brutto = Math.ceil(netto * (1 + versch / 100));
+  const verschAnz = brutto - netto;
+
+  document.getElementById('flArea').textContent = fmt(area) + ' m²';
+  document.getElementById('flProM2').textContent = fmt(proM2) + ' Stk';
+  document.getElementById('flAnz').textContent = brutto + ' Stk';
+  document.getElementById('flVerAn').textContent = verschAnz + ' Stk (' + versch + '%)';
+  show('resFl2');
+  saveHistory('Fliesen', brutto + ' Stk für ' + fmt(area) + ' m²');
+}
+
+// === KLEBER & FUGENMASSE ===
+function calcKleberFuge() {
+  const fl = pf('fmFl');
+  const zahn = pf('fmZahn');
+  const staerke = pf('fmStaerke');
+  const fugeB = pf('fmFugeB');
+  if (fl <= 0) return;
+
+  const kleberProM2 = zahn * 0.5;
+  const kleberKg = fl * kleberProM2;
+  const kleberSaecke = Math.ceil(kleberKg / 25);
+
+  const fL = pf('flFlL') || 60;
+  const fB = pf('flFlB') || 30;
+  const fugenLaenge = fl * ((1000 / fL) + (1000 / fB));
+  const fugenVol = fugenLaenge * fugeB / 1000 * staerke / 1000;
+  const fugenKg = fugenVol * 1.6;
+  const fugenSaecke = Math.ceil(fugenKg / 5);
+
+  document.getElementById('fmKleber').textContent = fmt(kleberKg) + ' kg';
+  document.getElementById('fmKleberS').textContent = kleberSaecke + ' Säcke';
+  document.getElementById('fmFuge').textContent = fmt(fugenKg) + ' kg';
+  document.getElementById('fmFugeS').textContent = fugenSaecke + ' Säcke';
+  show('resFM');
+  saveHistory('Kleber', fmt(kleberKg) + 'kg + ' + fmt(fugenKg) + 'kg Fuge');
+}
+
+// === MEHR: TOOLS ===
+function showTool(id) {
+  const tools = ['umrechner', 'pythagoras', 'prozent', 'gefaelle'];
+  tools.forEach(t => {
+    document.getElementById(`tool-${t}`).style.display = t === id ? 'block' : 'none';
+  });
+  if (id === 'umrechner') updateUmrechner();
+}
+
+// UMRECHNER
+const units = {
+  laenge: { mm:1, cm:10, m:1000, km:1000000, zoll:25.4, fuß:304.8 },
+  flaeche: { 'mm²':1, 'cm²':100, 'm²':1000000, 'ha':10000000000, 'km²':1000000000000 },
+  volumen: { ml:1, l:1000, 'm³':1000000, 'Gallone':3785.41 },
+  gewicht: { g:1, kg:1000, t:1000000, lb:453.59, oz:28.35 }
+};
+
+function updateUmrechner() {
+  const kat = document.getElementById('umKat').value;
+  const sel = document.getElementById('umVon');
+  sel.innerHTML = '';
+  Object.keys(units[kat]).forEach(u => {
+    sel.innerHTML += `<option value="${u}">${u}</option>`;
+  });
+  convertUnit();
+}
+
+function convertUnit() {
+  const kat = document.getElementById('umKat').value;
+  const val = pf('umVal');
+  const von = document.getElementById('umVon').value;
+  const u = units[kat];
+  const base = val * u[von];
+  let html = '';
+  Object.keys(u).forEach(k => {
+    if (k !== von) {
+      const v = base / u[k];
+      html += `<div class="result-row"><span class="label">${k}</span><span class="val">${fmt(v)}</span></div>`;
+    }
+  });
+  document.getElementById('umResults').innerHTML = html || '<div class="result-row"><span class="label">Wert eingeben</span></div>';
+}
+
+// PYTHAGORAS
+function calcPyth() {
+  const a = pf('pyA'), b = pf('pyB'), c = pf('pyC');
+  let res;
+  if (a > 0 && b > 0 && !c) {
+    res = Math.sqrt(a*a + b*b);
+    document.getElementById('resPythVal').textContent = 'c = ' + fmt(res) + ' m';
+  } else if (a > 0 && c > 0 && !b) {
+    res = Math.sqrt(c*c - a*a);
+    document.getElementById('resPythVal').textContent = 'b = ' + fmt(res) + ' m';
+  } else if (b > 0 && c > 0 && !a) {
+    res = Math.sqrt(c*c - b*b);
+    document.getElementById('resPythVal').textContent = 'a = ' + fmt(res) + ' m';
+  } else {
+    document.getElementById('resPythVal').textContent = '2 Werte eingeben, 1 leer lassen';
+  }
+  show('resPyth');
+}
+
+// PROZENT
+function calcProzent() {
+  const g = pf('prGrund'), p = pf('prProz');
+  if (g <= 0) return;
+  document.getElementById('prWert').textContent = fmt(g * p / 100);
+  document.getElementById('prPlus').textContent = fmt(g * (1 + p / 100));
+  document.getElementById('prMinus').textContent = fmt(g * (1 - p / 100));
+  show('resPr');
+}
+
+// GEFÄLLE
+function calcGefaelle() {
+  const s = pf('geStr'), p = pf('gePro');
+  if (s <= 0) return;
+  const h = s * p / 100;
+  const winkel = Math.atan(p / 100) * (180 / Math.PI);
+  document.getElementById('geHoehe').textContent = fmt(h * 100) + ' cm (' + fmt(h) + ' m)';
+  document.getElementById('geWinkel').textContent = fmt(winkel) + '°';
+  document.getElementById('geVerh').textContent = '1:' + fmt(100 / p);
+  show('resGef');
+}
+
+// === HELPERS ===
+function pf(id) { return parseFloat(document.getElementById(id).value) || 0; }
+function fmt(n) { return Math.round(n * 100) / 100; }
+function show(id) { document.getElementById(id).classList.add('show'); }
+
+// === HISTORY ===
+function saveHistory(type, val) {
+  const h = JSON.parse(localStorage.getItem('hw-history') || '[]');
+  h.unshift({ type, val, time: new Date().toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit' }) });
+  if (h.length > 20) h.pop();
+  localStorage.setItem('hw-history', JSON.stringify(h));
+}
+
+// === PWA ===
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installBtn').style.display = 'block';
+});
+function installApp() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(() => {
+    deferredPrompt = null;
+    document.getElementById('installBtn').style.display = 'none';
+  });
+}
+
+// OFFLINE STATUS
+function updateStatus() {
+  const d = document.getElementById('statusDot');
+  d.className = navigator.onLine ? 'offline-dot' : 'offline-dot off';
+  d.title = navigator.onLine ? 'Online' : 'Offline';
+}
+window.addEventListener('online', updateStatus);
+window.addEventListener('offline', updateStatus);
+updateStatus();
+
+// SERVICE WORKER
+if ('serviceWorker' in navigator) {
+  const sw = `const C='hw-tool-v1';self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(['./'])));self.skipWaiting()});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C).map(x=>caches.delete(x)))));self.clients.claim()});self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).catch(()=>caches.match('./'))))})`;
+  const b = new Blob([sw], {type:'application/javascript'});
+  navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});
+}
+
+// Init umrechner
+updateUmrechner();
+</script>
+
+</body>
+</html>
